@@ -1,5 +1,8 @@
-FROM golang:latest
+FROM golang:latest as builder
 WORKDIR /app
 COPY . .
 RUN GOOS=linux go build -ldflags="-w -s" -o server .
-CMD [ "./server" ]
+
+FROM scratch
+COPY --from=builder /app/server .
+CMD ["./server"]
